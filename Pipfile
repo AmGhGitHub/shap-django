@@ -17,6 +17,8 @@ redis = "*"
 xgboost = "*"
 shap = "*"
 scikit-learn = "*"
+install = "*"
+django-environ = "*"
 
 [dev-packages]
 

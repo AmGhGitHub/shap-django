@@ -1,4 +1,5 @@
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -8,10 +9,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-w+k60q-8j1^o^*++hgn6a56@i$n-fq4^ulf-36f3d-$5a&t-5)'
+SECRET_KEY = os.environ.get('SECRET_KEY', default='no-key')
+
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = int(os.environ.get("DEBUG", default=0))
 
 # ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 # CORS error while consuming calling REST API with React
@@ -29,10 +31,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    
+
+    # 3rd party apps
     'rest_framework',
     "corsheaders",
-    
+
+    # local apps
     'api.apps.ApiConfig'
 ]
 
@@ -119,7 +123,6 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
 
 
 # celery
