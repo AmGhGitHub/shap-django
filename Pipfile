@@ -7,6 +7,16 @@ name = "pypi"
 django = "*"
 djangorestframework = "*"
 celery = "*"
+numpy = "*"
+pandas = "*"
+openpyxl = "*"
+latex2sympy2 = "*"
+sympy = "*"
+django-cors-headers = "*"
+redis = "*"
+xgboost = "*"
+shap = "*"
+scikit-learn = "*"
 
 [dev-packages]
 
