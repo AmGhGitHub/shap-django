@@ -14,7 +14,10 @@ SECRET_KEY = os.environ.get('SECRET_KEY', default='no-key')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = int(os.environ.get("DEBUG", default=0))
 
-ENVIRONMENT = os.environ.get('ENVIRONMENT', default='development')
+ENVIRONMENT = os.environ.get('ENVIRONMENT', default='production')
+# Redis_url=os.environ.get("REDIS_URL")
+REDIS_URL=os.environ.get("REDIS_URL_DEV")
+# prin (REDIS_URL)
 
 if ENVIRONMENT == 'production':
     SECURE_BROWSER_XSS_FILTER = True # new
@@ -26,6 +29,10 @@ if ENVIRONMENT == 'production':
     SECURE_CONTENT_TYPE_NOSNIFF = True # new
     SESSION_COOKIE_SECURE = True # new
     CSRF_COOKIE_SECURE = True
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+    
+    REDIS_URL=os.environ.get("REDIS_URL")
+    
 
 # ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 # CORS error while consuming calling REST API with React
@@ -138,10 +145,13 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 # celery
-# CELERY_BROKER_URL = 'redis://localhost:6379/1'
-# CELERY_RESULT_BACKEND = 'redis://localhost:6379/2'
-CELERY_BROKER_URL = 'redis://redis:6379/1'
-CELERY_RESULT_BACKEND = 'redis://redis:6379/2'
+
+# CELERY_BROKER_URL = 'redis://redis:6379'
+# CELERY_RESULT_BACKEND = 'redis://redis:6379'
+# print(REDIS_URL)
+CELERY_BROKER_URL = REDIS_URL
+CELERY_RESULT_BACKEND = REDIS_URL
+
 # CELERY_ACCEPT_CONTENT = ['application/json']
 # CELERY_RESULT_SERIALIZER = 'json'
 # CELERY_TASK_SERIALIZER = 'json'

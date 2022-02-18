@@ -16,7 +16,8 @@ services:
     environment:
       - SECRET_KEY=${SECRET_KEY} # here it is
       - DEBUG=${DEBUG}
-      - ENVIRONMENT=${ENVIRONMENT_PRD}
+      - ENVIRONMENT=${ENVIRONMENT_DEV}
+      - REDIS_URL_DEV=${REDIS_URL_DEV}
 
   redis:
     image: redis:latest
