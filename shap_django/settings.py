@@ -4,7 +4,6 @@ import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
@@ -14,6 +13,19 @@ SECRET_KEY = os.environ.get('SECRET_KEY', default='no-key')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = int(os.environ.get("DEBUG", default=0))
+
+ENVIRONMENT = os.environ.get('ENVIRONMENT', default='development')
+
+if ENVIRONMENT == 'production':
+    SECURE_BROWSER_XSS_FILTER = True # new
+    X_FRAME_OPTIONS = 'DENY' # new
+    # SECURE_SSL_REDIRECT = True
+    SECURE_HSTS_SECONDS = 3600 # new
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True # new
+    SECURE_HSTS_PRELOAD = True # new
+    SECURE_CONTENT_TYPE_NOSNIFF = True # new
+    SESSION_COOKIE_SECURE = True # new
+    CSRF_COOKIE_SECURE = True
 
 # ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 # CORS error while consuming calling REST API with React
