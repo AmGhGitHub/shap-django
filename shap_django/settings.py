@@ -15,9 +15,8 @@ SECRET_KEY = os.environ.get('SECRET_KEY', default='no-key')
 DEBUG = int(os.environ.get("DEBUG", default=0))
 
 ENVIRONMENT = os.environ.get('ENVIRONMENT', default='production')
-# Redis_url=os.environ.get("REDIS_URL")
-REDIS_URL=os.environ.get("REDIS_URL_DEV")
-# prin (REDIS_URL)
+
+REDIS_URL=os.environ.get("REDIS_URL")
 
 if ENVIRONMENT == 'production':
     SECURE_BROWSER_XSS_FILTER = True # new
@@ -31,7 +30,7 @@ if ENVIRONMENT == 'production':
     CSRF_COOKIE_SECURE = True
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
     
-    REDIS_URL=os.environ.get("REDIS_URL")
+    
     
 
 # ALLOWED_HOSTS = ['localhost', '127.0.0.1']
@@ -145,12 +144,14 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 # celery
+# print("os.env: \n",os.environ)
+# CELERY_BROKER_URL = REDIS_URL
+# CELERY_RESULT_BACKEND = REDIS_URL
 
-# CELERY_BROKER_URL = 'redis://redis:6379'
-# CELERY_RESULT_BACKEND = 'redis://redis:6379'
-# print(REDIS_URL)
-CELERY_BROKER_URL = REDIS_URL
-CELERY_RESULT_BACKEND = REDIS_URL
+# print("REDIS_URL: \n",REDIS_URL)
+
+CELERY_BROKER_URL = 'redis://redis:6379'
+CELERY_RESULT_BACKEND = 'redis://redis:6379'
 
 # CELERY_ACCEPT_CONTENT = ['application/json']
 # CELERY_RESULT_SERIALIZER = 'json'

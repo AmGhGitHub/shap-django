@@ -9,19 +9,18 @@ services:
       - .:/code
     ports:
       - 8000:8000
-    links:
-      - redis
-    depends_on:
-      - redis
     environment:
       - SECRET_KEY=${SECRET_KEY} # here it is
       - DEBUG=${DEBUG}
       - ENVIRONMENT=${ENVIRONMENT_DEV}
-      - REDIS_URL_DEV=${REDIS_URL_DEV}
+      - REDIS_URL=${REDIS_URL}
+    links:
+      - redis
+    depends_on:
+      - redis
 
   redis:
     image: redis:latest
-    # container_name: rd01
     ports:
       - 6379:6379
 

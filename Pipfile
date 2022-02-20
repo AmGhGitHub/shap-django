@@ -20,6 +20,7 @@ scikit-learn = "*"
 install = "*"
 django-environ = "*"
 gunicorn = "*"
+matplotlib = "*"
 
 [dev-packages]
 

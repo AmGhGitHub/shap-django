@@ -15,9 +15,6 @@ def generate_shap(input_df, col_dependent_var="output"):
 
     model = XGBRegressor(random_state=42)
 
-    scaler = MinMaxScaler()
-
-    # pipe = Pipeline(steps)
     X_train, X_test, y_train, y_test = train_test_split(
         X, y, test_size=0.2, random_state=42)
 
@@ -44,4 +41,5 @@ def generate_shap(input_df, col_dependent_var="output"):
                          right_index=True,
                          left_on=X_test.index,
                          right_on=df_XGB_SHAP.index)
-    return df_report
+    # return df_report
+    return score_train,score_test
