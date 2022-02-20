@@ -51,6 +51,7 @@ def gen_test_shap_plot(df):
     output_column_name = 'output'
     X = df.loc[:, df.columns != output_column_name]
     y = df.iloc[:, df.columns == output_column_name]
+    print(y)
     # X, y = shap.datasets.adult()
     # X = X[:20]
     # y = y[:20]
@@ -59,6 +60,7 @@ def gen_test_shap_plot(df):
     # compute SHAP values
     explainer = shap.TreeExplainer(model, X)
     shap_values = explainer.shap_values(X)
+    # print(shap_values)
 
     buf = io.BytesIO()
     f = plt.figure()
@@ -66,7 +68,7 @@ def gen_test_shap_plot(df):
     shap.summary_plot(shap_values, features=X,
                       feature_names=X.columns, plot_type='bar', show=False)
     # shap.summary_plot(shap_values, X, show=False)
-    f.savefig(buf, format='png', bbox_inches='tight', dpi=1200)
+    f.savefig(buf, format='png', bbox_inches='tight')
     plt.close()
     buf.seek(0)
     img = buf.read()
