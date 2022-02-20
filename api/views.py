@@ -11,6 +11,7 @@ from rest_framework.response import Response
 from django.http import HttpResponse
 
 from .tasks import gen_results
+from .util.ml_shap import gen_test_shap_plot
 
 def calc_nruns(val):
     return int(math.pow(10, int(val)))
@@ -19,17 +20,18 @@ def calc_nruns(val):
 @api_view(["GET"])
 def generate_image(request):
     if request.method == "GET":
-        buf = io.BytesIO()
+        # buf = io.BytesIO()
 
-        y = np.random.randint(1, 20, 5)
-        plt.plot([0, 1, 2, 3, 4], y)
-        plt.savefig(buf, format='png')
-        # to free the memory 
-        # https://stackoverflow.com/questions/26132693/matplotlib-saving-state-between-different-uses-of-io-bytesio
-        plt.close()  
+        # y = np.random.randint(1, 20, 5)
+        # plt.plot([0, 1, 2, 3, 4], y)
+        # plt.savefig(buf, format='png')
+        # # to free the memory 
+        # # https://stackoverflow.com/questions/26132693/matplotlib-saving-state-between-different-uses-of-io-bytesio
+        # plt.close()  
 
-        buf.seek(0)
-        img = buf.read()
+        # buf.seek(0)
+        # img = buf.read()
+        img=gen_test_shap_plot()
         return HttpResponse(img, content_type="image/png")
 
 

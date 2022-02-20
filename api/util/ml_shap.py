@@ -1,10 +1,10 @@
 import pandas as pd
 import shap
+import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
-from sklearn.pipeline import Pipeline
-from sklearn.preprocessing import MinMaxScaler, StandardScaler
 from sympy import principal_branch
-from xgboost import XGBRegressor
+from xgboost import XGBRegressor,XGBClassifier
+import io
 
 
 def generate_shap(input_df, col_dependent_var="output"):
@@ -43,3 +43,23 @@ def generate_shap(input_df, col_dependent_var="output"):
                          right_on=df_XGB_SHAP.index)
     # return df_report
     return score_train,score_test
+
+def gen_test_shap_plot():
+# train XGBoost model
+    X, y = shap.datasets.adult()
+    X = X[:20]
+    y = y[:20]
+    model =XGBClassifier().fit(X, y)
+
+    # compute SHAP values
+    explainer = shap.TreeExplainer(model, X)
+    shap_values = explainer.shap_values(X)
+    
+    buf = io.BytesIO()
+    f = plt.figure()
+    shap.summary_plot(shap_values, X, show=False)
+    f.savefig(buf,format='png', bbox_inches='tight')
+    plt.close()  
+    buf.seek(0)
+    img = buf.read()
+    return img
