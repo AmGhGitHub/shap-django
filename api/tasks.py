@@ -12,9 +12,12 @@ def gen_results(sample_size, lst_variables, repeated_rows_pct, latex_eq):
 
     var_hist = VarHistogram(df_with_nulls)
     
-    img=gen_test_shap_plot(df_without_nulls)
+    df_without_nulls_js=df_without_nulls.to_json()
+    # print(df_without_nulls_js)
+    
+    img=gen_test_shap_plot(df_without_nulls_js)
     
 
     hist_input_binSize_binCenters, hist_output_binSize_binCenters = var_hist.hist_input_data, var_hist.hist_output_data
     # print(hist_input_binSize_binCenters)
-    return hist_input_binSize_binCenters, hist_output_binSize_binCenters,img
+    return hist_input_binSize_binCenters, hist_output_binSize_binCenters#,img
