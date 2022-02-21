@@ -11,7 +11,7 @@ from rest_framework.response import Response
 from django.http import HttpResponse
 
 from .tasks import gen_results
-from .util.ml_shap import gen_test_shap_plot
+from .util.ml_shap import generate_ml_and_shap_data
 
 
 def calc_nruns(val):
@@ -21,7 +21,7 @@ def calc_nruns(val):
 @api_view(["GET"])
 def generate_image(request):
     if request.method == "GET":
-        img = gen_test_shap_plot()
+        img = generate_ml_and_shap_data()
         return HttpResponse(img, content_type="image/png")
 
 
@@ -46,8 +46,8 @@ def generate_data(request):
 
         response_data = {'status': celery_task.status}
         if celery_task.status == 'SUCCESS':
-            hist_data = celery_task.get()
-            response_data['hist_input_binSize_binCenters'] = hist_data[0]
-            response_data['hist_output_binSize_binCenters'] = hist_data[1]
+            data = celery_task.get()
+            response_data['hist_input_binSize_binCenters'] = data['input histogram']
+            response_data['hist_output_binSize_binCenters'] = data['output histogram']
 
         return Response(response_data)

@@ -1,6 +1,6 @@
 from celery import shared_task
 from .util.generate_var_dist import VarDf, VarHistogram
-from .util.ml_shap import gen_test_shap_plot
+from .util.ml_shap import generate_ml_and_shap_data
 
 
 @shared_task
@@ -13,11 +13,8 @@ def gen_results(sample_size, lst_variables, repeated_rows_pct, latex_eq):
     var_hist = VarHistogram(df_with_nulls)
     
     df_without_nulls_js=df_without_nulls.to_json()
-    # print(df_without_nulls_js)
-    
-    img=gen_test_shap_plot(df_without_nulls_js)
-    
 
-    hist_input_binSize_binCenters, hist_output_binSize_binCenters = var_hist.hist_input_data, var_hist.hist_output_data
-    # print(hist_input_binSize_binCenters)
-    return hist_input_binSize_binCenters, hist_output_binSize_binCenters#,img
+    data={"input histogram": var_hist.hist_input_data, 
+          "output histogram": var_hist.hist_output_data,
+          "ML and SHAP data":generate_ml_and_shap_data(df_without_nulls_js)}
+    return data
