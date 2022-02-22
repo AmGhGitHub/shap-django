@@ -47,7 +47,9 @@ def generate_data(request):
         response_data = {'status': celery_task.status}
         if celery_task.status == 'SUCCESS':
             data = celery_task.get()
+            
             response_data['hist_input_binSize_binCenters'] = data['input histogram']
             response_data['hist_output_binSize_binCenters'] = data['output histogram']
+            response_data['ML and SHAP data']=data['ML and SHAP data']
 
         return Response(response_data)
