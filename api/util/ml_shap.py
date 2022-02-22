@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 import shap
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import r2_score
@@ -34,9 +35,15 @@ def generate_ml_and_shap_data(df_js):
     explainer = shap.TreeExplainer(xgb_reg)
     shap_values = explainer.shap_values(X_train)
 
-    df_train_shapValues = pd.DataFrame(
-        shap_values, columns=X_train.columns.tolist())
+    # df_train_shapValues = pd.DataFrame(
+    #     shap_values, columns=X_train.columns.tolist())
+    
+    vals= np.abs(shap_values).mean(0)
+    feature_importance = pd.DataFrame(list(zip(X_train.columns,vals)),columns=['col_name','feature_importance_vals'])
+    # feature_importance.sort_values(by=['feature_importance_vals'],ascending=False,inplace=True)
+    # print(feature_importance.head())
 
     return {"model_r2": {"train_data": r2_model_train, "test_data": r2_model_test},
             "model_prediction":{"train_data": df_train_pred_sample.to_json(orient='values'),"test_data": df_test_pred_sample.to_json(orient='values')},
-            "df_train_shapValues": df_train_shapValues.to_json(orient='records')}
+            "shap":{"feature_importance": feature_importance.to_json(orient='split')}
+            }
