@@ -75,7 +75,7 @@ class VarDf:
         df = df.fillna(method="ffill")
 
         for i, col in enumerate(df.columns[:-1]):  # exclude output columns
-            null_size = int((self.lst_null_pct[i] / 100.0) * nrows)
+            null_size = int((float(self.lst_null_pct[i]) / 100.0) * nrows)
             null_inds = self.__get_null_indices(max_ind, null_size)
             df.loc[null_inds, col] = np.nan
 
