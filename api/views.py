@@ -18,13 +18,6 @@ def calc_nruns(val):
     return int(math.pow(10, int(val)))
 
 
-@api_view(["GET"])
-def generate_image(request):
-    if request.method == "GET":
-        img = generate_ml_and_shap_data()
-        return HttpResponse(img, content_type="image/png")
-
-
 @api_view(["POST", "GET"])
 def generate_data(request):
     if request.method == 'POST':
