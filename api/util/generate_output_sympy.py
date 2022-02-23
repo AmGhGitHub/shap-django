@@ -38,7 +38,6 @@ def add_output_to_df(input_df, latex_expr,save_results=False):
     df['output'] = output
     if save_results:
         df.to_excel('./api/util/data/df.xlsx')
-    # print(os.path.relpath())
     return df
 
 

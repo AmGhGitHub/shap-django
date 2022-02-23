@@ -8,7 +8,7 @@ class VarHistogram:
     def __init__(self, df) -> None:
         self.df = df.copy()
         self.sample_size = self.df.shape[0]
-        self.hist_input_data, self.hist_output_data = self.__generate_histogram_data()
+        self.hist_data = self.__generate_histogram_data()
 
     def __get_nbins(self):
         size = self.sample_size
@@ -53,7 +53,9 @@ class VarHistogram:
             {"bin_size": hist.tolist(), "bin_centers": list(
                 np.round(bins_centers, 3))}
         )
-        return hist_input_data, hist_output_data
+        hist_data={'inputs':hist_input_data,'output':hist_output_data}
+        # print("hist_data:",hist_data)
+        return hist_data
 
 
 class VarDf:

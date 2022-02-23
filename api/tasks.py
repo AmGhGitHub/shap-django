@@ -14,7 +14,6 @@ def gen_results(sample_size, lst_variables, repeated_rows_pct, latex_eq):
     
     df_without_nulls_js=df_without_nulls.to_json()
 
-    data={"input histogram": var_hist.hist_input_data, 
-          "output histogram": var_hist.hist_output_data,
-          "ML and SHAP data":generate_ml_and_shap_data(df_without_nulls_js)}
+    data={"Histogram data": var_hist.hist_data,
+          "ML-SHAP data":generate_ml_and_shap_data(df_without_nulls_js)}
     return data
