@@ -1,3 +1,4 @@
+from dataclasses import replace
 import pandas as pd
 import numpy as np
 import shap
@@ -29,21 +30,40 @@ def generate_ml_and_shap_data(df_js):
 
     df_train_pred_sample = get_sample_def(
         y_train[output_column_name].values, y_train_pred, 0.2)
+    
     df_test_pred_sample = get_sample_def(
         y_test[output_column_name].values, y_test_pred, 0.3)
+    
+    model_train_pred=df_train_pred_sample.values.tolist()
+    model_test_pred=df_test_pred_sample.tolist()
 
     explainer = shap.TreeExplainer(xgb_reg)
     shap_values = explainer.shap_values(X_train)
 
-    # df_train_shapValues = pd.DataFrame(
-    #     shap_values, columns=X_train.columns.tolist())
+    df_train_shapValues = pd.DataFrame(
+        shap_values, columns=X_train.columns.tolist())
+        
+    df_train_shapValues_sample=df_train_shapValues.sample(frac=0.4,replace=False)
+    
+    
+    
+    
     
     vals= np.abs(shap_values).mean(0)
     feature_importance = pd.DataFrame(list(zip(X_train.columns,vals)),columns=['col_name','feature_importance_vals'])
-    # feature_importance.sort_values(by=['feature_importance_vals'],ascending=False,inplace=True)
-    # print(feature_importance.head())
+
+    shap_features=[col for col in df_train_shapValues.columns]
+    shap_values_sample=[df_train_shapValues_sample[col].values.tolist() for col in df_train_shapValues_sample.columns]
+    shap_feature_importance=np.abs(shap_values).mean(0).tolist()
+    # print(shap_features)
+    # print(shap_values_sample)
+    # print(shap_feature_importance)
 
     return {"model_r2": {"train_data": r2_model_train, "test_data": r2_model_test},
-            "model_prediction":{"train_data": df_train_pred_sample.to_json(orient='values'),"test_data": df_test_pred_sample.to_json(orient='values')},
-            "shap":{"feature_importance": feature_importance.to_json(orient='split')}
+            "model_prediction":{"train_data": model_train_pred,"test_data": model_test_pred},
+            "shap":{"features":shap_features, 
+                    "sample_values":shap_values_sample,
+                    "shap_feature_importance":shap_feature_importance,
+                    "values":df_train_shapValues_sample.to_json(orient='values', double_precision=4),
+                    "feature_importance": feature_importance.to_json(orient='split', double_precision=4)}
             }
