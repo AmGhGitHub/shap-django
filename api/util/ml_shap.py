@@ -1,3 +1,4 @@
+from tabnanny import check
 import pandas as pd
 import numpy as np
 import shap
@@ -39,6 +40,8 @@ def generate_ml_and_shap_data(df_js):
     xgb_reg.fit(X_train, y_train)
     y_train_pred = xgb_reg.predict(X_train)
     y_test_pred = xgb_reg.predict(X_test)
+    y_all_pred=xgb_reg.predict(X)
+    
 
     model_r2_train_data = round(r2_score(y_train, y_train_pred), 3)
     model_r2_test_data = round(r2_score(y_test, y_test_pred), 3)
@@ -67,6 +70,27 @@ def generate_ml_and_shap_data(df_js):
     
 
     shap_features = [col for col in df_train_shapValues.columns]
+    
+    shap_values_test = explainer.shap_values(X_test)
+    
+    df_XGB = pd.DataFrame(y_test_pred, index=X_test.index, columns=['prediction'])
+
+    df_SHAP = pd.DataFrame(shap_values_test,
+                        index=X_test.index,
+                        columns=[f'{feature} contribultion' for feature in X_test.columns])
+    df_XGB_SHAP = pd.concat([df_XGB, df_SHAP], axis=1)
+    
+    df_report = pd.merge(left=X_test,
+                         right=df_XGB_SHAP,
+                         how='left',
+                         left_index=False,
+                         right_index=True,
+                         left_on=X_test.index,
+                         right_on=df_XGB_SHAP.index)
+    
+    print(df_report.head(5))
+    
+    
     shap_values_sample_arr = get_shap_sample_values_arr(
         df_train_shapValues_sample,y_train_pred_scaled_smaple)
     feature_importance = np.abs(shap_values).mean(0).tolist()
