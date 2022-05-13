@@ -1,4 +1,3 @@
-from pyexpat import features
 from tabnanny import check
 import pandas as pd
 import numpy as np
@@ -40,7 +39,7 @@ def generate_ml_and_shap_data(df_js):
     xgb_reg.fit(X_train, y_train)
     y_train_pred = xgb_reg.predict(X_train)
     y_test_pred = xgb_reg.predict(X_test)
-    # y_all_pred=xgb_reg.predict(X)
+    y_all_pred=xgb_reg.predict(X)
     
 
     model_r2_train_data = round(r2_score(y_train, y_train_pred), 3)
@@ -70,7 +69,6 @@ def generate_ml_and_shap_data(df_js):
     
 
     shap_features = [col for col in df_train_shapValues.columns]
-    n_features=len(shap_features)
     
     shap_values_test = explainer.shap_values(X_test)
     
@@ -88,11 +86,12 @@ def generate_ml_and_shap_data(df_js):
                          right_index=True,
                          left_on=X_test.index,
                          right_on=df_XGB_SHAP.index),4)
-    df_merged_sample=df_merged.sample(frac=0.3, replace=False)
+    #df_merged=round_df(df_merged,4)
     
-    features_values_test=df_merged_sample.iloc[:,:n_features].values.tolist()
-    features_shap_values_test=df_merged_sample.iloc[:,-n_features:].values.tolist()
-
+    df_report_json=df_merged.sample(frac=0.3).to_json(orient='split')
+    print(df_report_json)
+    print(shap_features)
+    
     
     shap_values_sample_arr = get_shap_sample_values_arr(
         df_train_shapValues_sample,y_train_pred_scaled_smaple)
@@ -106,7 +105,6 @@ def generate_ml_and_shap_data(df_js):
             "shap": {"features": shap_features,
                      "sample_values": shap_values_sample_arr,
                      "feature_importance": feature_importance,
-                    "features_values_test":features_values_test,
-                    "features_shap_values_test":features_shap_values_test,
+                     "alaki":df_report_json
                      }
             }
