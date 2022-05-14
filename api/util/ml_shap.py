@@ -92,10 +92,14 @@ def generate_ml_and_shap_data(df_js):
     number_samples=min(500, df_merged.shape[0])
     
     df_merged_sample=df_merged.sample(n=number_samples, replace=False)
+    #print(df_merged)
     
     features_values_test=df_merged_sample.iloc[:,:n_features].values.tolist()
+    #print(features_values_test)
     features_shap_values_test=df_merged_sample.iloc[:,-n_features:].values.tolist()
-
+    #print(features_shap_values_test)
+    function_values_test=df_merged_sample.iloc[:,n_features].values.tolist()
+    #print(function_values_test)
     
     shap_values_sample_arr = get_shap_sample_values_arr(
         df_train_shapValues_sample,y_train_pred_scaled_smaple)
@@ -110,5 +114,6 @@ def generate_ml_and_shap_data(df_js):
                      "feature_importance": feature_importance,
                     "features_values_test":features_values_test,
                     "features_shap_values_test":features_shap_values_test,
+                    "function_values_test":function_values_test
                      }
             }
