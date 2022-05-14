@@ -10,8 +10,9 @@ from xgboost import XGBRegressor
 import json
 
 
-def get_sample_def(actual_values, predicted_values, fraction):
-    return pd.DataFrame({"actual": actual_values, "predicted": predicted_values}).sample(frac=fraction, replace=False)
+def get_sample_def(actual_values, predicted_values):
+    number_of_samples=min(500, actual_values.shape[0])
+    return pd.DataFrame({"actual": actual_values, "predicted": predicted_values}).sample(n=number_of_samples, replace=False)
 
 
 def round_df(input_df, n_decimial):
@@ -40,17 +41,16 @@ def generate_ml_and_shap_data(df_js):
     xgb_reg.fit(X_train, y_train)
     y_train_pred = xgb_reg.predict(X_train)
     y_test_pred = xgb_reg.predict(X_test)
-    # y_all_pred=xgb_reg.predict(X)
     
 
     model_r2_train_data = round(r2_score(y_train, y_train_pred), 3)
     model_r2_test_data = round(r2_score(y_test, y_test_pred), 3)
 
     df_train_pred_sample = round_df(get_sample_def(
-        y_train[output_column_name].values, y_train_pred, 0.2), 4)
+        y_train[output_column_name].values, y_train_pred), 4)
 
     df_test_pred_sample = round_df(get_sample_def(
-        y_test[output_column_name].values, y_test_pred, 0.3), 4)
+        y_test[output_column_name].values, y_test_pred), 4)
 
     model_pred_train_data = df_train_pred_sample.values.tolist()
     model_pred_test_data = df_test_pred_sample.values.tolist()
@@ -88,7 +88,10 @@ def generate_ml_and_shap_data(df_js):
                          right_index=True,
                          left_on=X_test.index,
                          right_on=df_XGB_SHAP.index),4)
-    df_merged_sample=df_merged.sample(frac=0.3, replace=False)
+    
+    number_samples=min(500, df_merged.shape[0])
+    
+    df_merged_sample=df_merged.sample(n=number_samples, replace=False)
     
     features_values_test=df_merged_sample.iloc[:,:n_features].values.tolist()
     features_shap_values_test=df_merged_sample.iloc[:,-n_features:].values.tolist()
@@ -97,7 +100,6 @@ def generate_ml_and_shap_data(df_js):
     shap_values_sample_arr = get_shap_sample_values_arr(
         df_train_shapValues_sample,y_train_pred_scaled_smaple)
     feature_importance = np.abs(shap_values).mean(0).tolist()
-    #print(shap_values_sample_arr)
     
 
     return {"model": {"r2": {"train_data": model_r2_train_data, "test_data": model_r2_test_data},
